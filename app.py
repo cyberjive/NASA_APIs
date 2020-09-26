@@ -1,54 +1,53 @@
 #! /usr/bin/python
+# TODO: write to dataframe/csv
 
 # standard library
 import os
 import json
+from collections import namedtuple
+from pprint import pprint
 
 # requires install
 import requests
 
+# custom
+from log_decorator import LogDecorator
+
 # API key
 NASA_KEY = os.environ["NASA_KEY"]
 
-# APOD - astronomy picture of the day
-def get_apod():
-    """
-    Call the astronomy pic of the day endpoint and return the JSON
-    """
-    url = f"https://api.nasa.gov/planetary/apod?api_key={ NASA_KEY }"
-    try:
+# coordinates for geo API
+Point = namedtuple("coordinates", "lat long")
+pt1 = Point(40.647040, -73.937414)
+
+# Endpoints
+URLS = [
+    f"https://api.nasa.gov/planetary/apod?date=2020-09-24&api_key={ NASA_KEY}",
+    # f"https://api.nasa.gov/planetary/earth/imagery?lon={ pt1[0] }&lat={ pt1[1] }&api_key={ NASA_KEY }",
+    f"https://api.nasa.gov/insight_weather/?api_key={ NASA_KEY }&feedtype=json&ver=1.0",
+    f"https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key={ NASA_KEY }",
+]
+
+
+@LogDecorator()
+def get_nasa_apis():
+    for url in URLS:
+        print(url)
         response = requests.get(url)
+        pprint(response)
         if response.status_code == 200:
-            response_json = json.loads(response.text)
-            json_string = json.dumps(
-                response_json,
-                indent=4,
-                sort_keys=True,
-            )
-            print(json_string)
-            return json_string
-        else:
-            return f"Error on call, response { response.status_code }"
-    except Exception as e:
-        return f"Error: { str(e) }"
-
-
-def get_landsat_imagery(lat=40.647040, lon=-73.937414):
-    """
-    Call the landsat imagery endpoint and return the result
-    """
-    url = f"https://api.nasa.gov/planetary/earth/imagery?lon={ lon }&lat={ lat }&api_key={ NASA_KEY }"
-    try:
-        response = requests.get(url)
-        if response.ok:
-            print(response.content)
-        else:
-            return f"Error on call, response code { response.status_code }"
-    except Exception as e:
-        return f"Error: { str(e) }"
+            if response.text:
+                pprint(response.text)
+                continue
+            elif response.content:
+                pprint(response.content)
+                continue
+            return response.status_code
 
 
 if __name__ == "__main__":
     # get_apod()
     # get_landsat_imagery()
+    # get_mars_weather()
+    get_nasa_apis()
     pass
