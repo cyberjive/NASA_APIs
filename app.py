@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# TODO: write to dataframe/csv
+# TODO: add more APIs, deal with geo 404
 
 # standard library
 import os
@@ -12,6 +12,7 @@ import requests
 
 # custom
 from log_decorator import LogDecorator
+from utils import build_data_frame, write_to_disk
 
 # API key
 NASA_KEY = os.environ["NASA_KEY"]
@@ -32,22 +33,20 @@ URLS = [
 @LogDecorator()
 def get_nasa_apis():
     for url in URLS:
-        print(url)
+        print(f"Retrieving { url }")
         response = requests.get(url)
-        pprint(response)
         if response.status_code == 200:
             if response.text:
-                pprint(response.text)
+                dataframe = build_data_frame(response.text)
+                write_to_disk(dataframe)
+                print("Writing to disk...")
                 continue
             elif response.content:
-                pprint(response.content)
-                continue
+                dataframe = build_data_frame(response.content)
+                write_to_disk(dataframe)
+                print("Writing to disk...")
             return response.status_code
 
 
 if __name__ == "__main__":
-    # get_apod()
-    # get_landsat_imagery()
-    # get_mars_weather()
     get_nasa_apis()
-    pass

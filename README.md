@@ -1,7 +1,9 @@
 ## NASA APIS
 
-Playing around with requests and NASA APIs, will probably it into a 
+Playing around with requests and NASA APIs, will probably turn it into a 
 Flask thing
+
+Currently rolls through a list of APIs, logs the calls, and writes to csv via pandas
 
 ## Installation
 
