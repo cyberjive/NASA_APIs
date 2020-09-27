@@ -18,10 +18,11 @@ python -m pip install -r requirements.txt
 
 ## Usage
 
-Activate your virtual environment and run the script(s)
+Activate your virtual environment and run the script(s) from the 
+CLI/inside your IDE
 
 
 ```bash
 source env/bin/activate
-python3 app.py
+python3 -m nasa_apis
 ```

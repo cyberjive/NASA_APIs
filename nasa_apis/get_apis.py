@@ -3,16 +3,16 @@
 
 # standard library
 import os
-import json
 from collections import namedtuple
 from pprint import pprint
 
 # requires install
 import requests
+from requests import get
 
 # custom
-from .log_decorator import LogDecorator
-from .utils import build_data_frame, write_to_disk
+from nasa_apis.log_decorator import LogDecorator
+from nasa_apis.utils import build_data_frame, write_to_disk
 
 # API key
 NASA_KEY = os.environ["NASA_KEY"]
@@ -31,26 +31,23 @@ URLS = [
 
 
 @LogDecorator()
-def get_nasa_apis():
+def get_nasa_apis() -> int:
     try:
         for url in URLS:
             print(f"Retrieving { url }")
             response = requests.get(url)
             if response.status_code == 200:
                 if response.text:
-                    breakpoint()
                     dataframe = build_data_frame(response.text)
                     write_to_disk(dataframe)
                     print("Writing to disk...")
                     continue
                 elif response.content:
-                    breakpoint()
                     dataframe = build_data_frame(response.content)
                     write_to_disk(dataframe)
                     print("Writing to disk...")
                 return response.status_code
             else:
-                breakpoint()
                 print(f"Error on call: {response.status_code}")
                 return response.status_code
     except Exception as e:
