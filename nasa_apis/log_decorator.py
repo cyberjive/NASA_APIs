@@ -1,5 +1,5 @@
 from functools import wraps
-import logging_config
+import nasa_apis.logging_config
 import logging
 
 
