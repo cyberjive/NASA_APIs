@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 
 @LogDecorator()
-def build_data_frame(data: dict):
+def build_data_frame(data: dict) -> pd.DataFrame:
     """
     Construct a new data frame from the provided
     dictionary
