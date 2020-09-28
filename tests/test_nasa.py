@@ -83,7 +83,7 @@ def mock_success_json_normalize(monkeypatch):
 @pytest.fixture
 def mock_success_response_code(monkeypatch):
     def mock_request_get(*args, **kwargs):
-        return MockResponse(200)
+        return MockResponse(200).json()
 
     monkeypatch.setattr(requests, "get", mock_request_get)
 
@@ -91,7 +91,7 @@ def mock_success_response_code(monkeypatch):
 @pytest.fixture
 def mock_failure_response_code(monkeypatch):
     def mock_request_get(*args, **kwargs):
-        return MockResponse(404)
+        return MockResponse(404).json()
 
     monkeypatch.setattr(requests, "get", mock_request_get)
 
