@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 import pytest
 import requests
@@ -97,11 +98,31 @@ def mock_failure_response_code(monkeypatch):
 
 
 # mock dataframe argument
-mock_df_arg = '{"date":"2020-09-24","explanation":"One of our Solar System\'s most tantalizing worlds, icy Saturnian moon Enceladus appears in these detailed hemisphere views from the Cassini spacecraft. In false color, the five panels present 13 years of infrared image data from Cassini\'s Visual and Infrared Mapping Spectrometer and Imaging Science Subsystem. \
-        Fresh ice is colored red, and the most dramatic features look like long gashes in the 500 kilometer diameter moon\'s south polar region. They correspond to the location of tiger stripes, surface fractures that likely connect to an ocean beneath the Enceladus ice shell. \
-        The fractures are the source of the moon\'s icy plumes that continuously spew into space. \
-        The plumes were discovered by by Cassini in 2005. Now, reddish hues in the northern half of the leading hemisphere view also indicate a recent resurfacing of other regions of the geologically active moon, a world that may hold conditions suitable for life.   Experts Debate: How will humanity first discover extraterrestrial life?",\
-        "hdurl":"https://apod.nasa.gov/apod/image/2009/PIA24023_fig1.jpg","media_type":"image","service_version":"v1","title":"Enceladus in Infrared","url":"https://apod.nasa.gov/apod/image/2009/PIA24023_fig1_1050.jpg"}\n'
+mock_df_arg = {
+    "date": "2020-09-24",
+    "explanation": "One of our Solar System's most tantalizing worlds, icy "
+    "Saturnian moon Enceladus appears in these detailed hemisphere "
+    "views from the Cassini spacecraft. In false color, the five "
+    "panels present 13 years of infrared image data from Cassini's "
+    "Visual and Infrared Mapping Spectrometer and Imaging Science "
+    "Subsystem. Fresh ice is colored red, and the most dramatic "
+    "features look like long gashes in the 500 kilometer diameter "
+    "moon's south polar region. They correspond to the location of "
+    "tiger stripes, surface fractures that likely connect to an "
+    "ocean beneath the Enceladus ice shell. The fractures are the "
+    "source of the moon's icy plumes that continuously spew into "
+    "space. The plumes were discovered by by Cassini in 2005. Now, "
+    "reddish hues in the northern half of the leading hemisphere "
+    "view also indicate a recent resurfacing of other regions of "
+    "the geologically active moon, a world that may hold "
+    "conditions suitable for life.   Experts Debate: How will "
+    "humanity first discover extraterrestrial life?",
+    "hdurl": "https://apod.nasa.gov/apod/image/2009/PIA24023_fig1.jpg",
+    "media_type": "image",
+    "service_version": "v1",
+    "title": "Enceladus in Infrared",
+    "url": "https://apod.nasa.gov/apod/image/2009/PIA24023_fig1_1050.jpg",
+}
 
 # utils tests
 def test_build_df_return_success():
@@ -126,3 +147,8 @@ def test_write_to_disk_failure():
     df = build_data_frame("invalid_arg")
     disk_out = write_to_disk(df)
     assert disk_out is None
+
+
+def test_mock_success_api_calls(mock_success_response_code):
+    test_list = get_nasa_apis()
+    assert type(test_list) == list
