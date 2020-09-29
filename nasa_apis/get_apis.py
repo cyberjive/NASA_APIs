@@ -3,12 +3,11 @@
 
 # standard library
 import os
+from typing import Tuple, List
 from collections import namedtuple
-from pprint import pprint
 
 # requires install
 import requests
-from requests import get
 
 # custom
 from nasa_apis.log_decorator import LogDecorator
@@ -29,29 +28,30 @@ URLS = [
     f"https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key={ NASA_KEY }",
 ]
 
+# named tuple for reponses
+Response = namedtuple("reponses", "url code status")
+
+# List to capture output
+RESPONSES = []
+
 
 @LogDecorator()
-def get_nasa_apis() -> int:
+def get_nasa_apis() -> List[Tuple]:
     try:
         for url in URLS:
             print(f"Retrieving { url }")
             response = requests.get(url)
             if response.status_code == 200:
-                if response.text:
-                    dataframe = build_data_frame(response.text)
-                    write_to_disk(dataframe)
-                    print("Writing to disk...")
-                    continue
-                elif response.content:
-                    dataframe = build_data_frame(response.content)
-                    write_to_disk(dataframe)
-                    print("Writing to disk...")
-                return response.status_code
+                dataframe = build_data_frame(response.json())
+                write_to_disk(dataframe)
+                RESPONSES.append(Response(url, response.status_code, response.ok))
             else:
                 print(f"Error on call: {response.status_code}")
-                return response.status_code
+                RESPONSES.append(Response(url, response.status_code, response.ok))
+        print(RESPONSES)
+        return RESPONSES
     except Exception as e:
-        return f"{ str(e) }"
+        return f"ERROR: { str(e) }"
 
 
 if __name__ == "__main__":
