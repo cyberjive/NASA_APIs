@@ -21,7 +21,11 @@ class LogDecorator(object):
                 self.logger.debug(
                     # f"Function: {func.__name__}", f"Args: {args}", f"Kwargs: {kwargs}"
 <<<<<<< HEAD
+<<<<<<< HEAD
                     """Function: %s
+=======
+                    """Function: %s"
+>>>>>>> 0ea9c0eff3e1361f3dc26e8e9aafea12dc3e6186
 =======
                     """Function: %s"
 >>>>>>> 0ea9c0eff3e1361f3dc26e8e9aafea12dc3e6186
