@@ -1,18 +1,16 @@
 # TODO fix csv construction on dataframe build/write
-import json
-from .log_decorator import LogDecorator
+from nasa_apis.log_decorator import LogDecorator
 import pandas as pd
 from pandas import DataFrame
 
 
 @LogDecorator()
-def build_data_frame(data: str) -> pd.DataFrame:
+def build_data_frame(data: dict) -> pd.DataFrame:
     """
     Construct a new data frame from the provided
     dictionary
     """
     try:
-        data = json.loads(data)
         df = pd.json_normalize(data)
         return df
     except Exception as e:
