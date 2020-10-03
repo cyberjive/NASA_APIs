@@ -84,17 +84,17 @@ def mock_success_json_normalize(monkeypatch):
 @pytest.fixture
 def mock_success_response_code(monkeypatch):
     def mock_request_get(*args, **kwargs):
-        return MockResponse(200).json()
+        return MockResponse(200)
 
     monkeypatch.setattr(requests, "get", mock_request_get)
 
 
 @pytest.fixture
 def mock_failure_response_code(monkeypatch):
-    def mock_request_get(*args, **kwargs):
-        return MockResponse(404).json()
+    def mock_success_request_get(*args, **kwargs):
+        return MockResponse(404)
 
-    monkeypatch.setattr(requests, "get", mock_request_get)
+    monkeypatch.setattr(requests, "get", mock_success_request_get)
 
 
 # mock dataframe argument
@@ -137,18 +137,25 @@ def test_build_df_return_failure():
 
 
 def test_write_to_disk_success():
-    df = build_data_frame(mock_df_arg)
+    df = pd.json_normalize(mock_df_arg)
     disk_out = write_to_disk(df)
     assert disk_out is not None
     assert isinstance(disk_out, pd.DataFrame)
 
 
 def test_write_to_disk_failure():
-    df = build_data_frame("invalid_arg")
+    df = "Invalid Argument"
     disk_out = write_to_disk(df)
     assert disk_out is None
 
 
-def test_mock_success_api_calls(mock_success_response_code):
+def test_mock_success_api_call(mock_success_response_code):
     test_list = get_nasa_apis()
     assert type(test_list) == list
+    assert test_list[2][1] == 200
+
+
+def test_mock_failure_api_call(mock_failure_response_code):
+    test_list = get_nasa_apis()
+    assert type(test_list) == list
+    assert test_list[2][1] == 404
