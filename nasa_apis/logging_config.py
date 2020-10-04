@@ -6,6 +6,7 @@ logging.basicConfig(
     filemode="a",
     level=logging.DEBUG,
 )
+
 logger = logging.getLogger("NASA_Logs")
 
 # TODO Formatting

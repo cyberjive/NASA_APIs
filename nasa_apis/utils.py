@@ -1,7 +1,6 @@
 # TODO fix csv construction on dataframe build/write
 from nasa_apis.log_decorator import LogDecorator
 import pandas as pd
-from pandas import DataFrame
 
 
 @LogDecorator()
