@@ -1,10 +1,14 @@
+# TODO See if there's a better way to clear the test
+# list than Autouse = True, it slows this down and is
+# loaded unnecessarily
 from typing import List
 import pandas as pd
 import pytest
 import requests
 
 from nasa_apis.utils import build_data_frame, write_to_disk
-from nasa_apis.get_apis import get_nasa_apis
+from nasa_apis.get_apis import get_nasa_apis, URLS
+
 
 # Mock class for API response
 class MockResponse:
@@ -58,6 +62,7 @@ class MockResponse:
                 "service_version": "v1",
                 "title": "Enceladus in Infrared",
                 "url": "https://apod.nasa.gov/apod/image/2009/PIA24023_fig1_1050.jpg",
+                "status_code": 200,
             }
 
 
@@ -83,18 +88,25 @@ def mock_success_json_normalize(monkeypatch):
 # requests fixtures
 @pytest.fixture
 def mock_success_response_code(monkeypatch):
-    def mock_request_get(*args, **kwargs):
+    def mock_rest_fail(*args, **kwargs):
         return MockResponse(200)
 
-    monkeypatch.setattr(requests, "get", mock_request_get)
+    monkeypatch.setattr(requests, "get", mock_rest_fail)
 
 
 @pytest.fixture
 def mock_failure_response_code(monkeypatch):
-    def mock_success_request_get(*args, **kwargs):
+    def mock_failure_request_get(*args, **kwargs):
         return MockResponse(404)
 
-    monkeypatch.setattr(requests, "get", mock_success_request_get)
+    monkeypatch.setattr(requests, "get", mock_failure_request_get)
+
+
+# nasa output reset fixture
+@pytest.fixture(autouse=True)
+def clear_api_listing():
+    t = get_nasa_apis()
+    t.clear()
 
 
 # mock dataframe argument
@@ -149,13 +161,26 @@ def test_write_to_disk_failure():
     assert disk_out is None
 
 
+# API call tests
 def test_mock_success_api_call(mock_success_response_code):
-    test_list = get_nasa_apis()
-    assert type(test_list) == list
-    assert test_list[2][1] == 200
+    success_test_list = get_nasa_apis()
+    assert type(success_test_list) == list
+    assert len(success_test_list) == 3
+    assert success_test_list[0][1] == 200
+    assert success_test_list[1][1] == 200
+    assert success_test_list[2][1] == 200
 
 
 def test_mock_failure_api_call(mock_failure_response_code):
-    test_list = get_nasa_apis()
-    assert type(test_list) == list
-    assert test_list[2][1] == 404
+    failure_test_list = get_nasa_apis()
+    assert type(failure_test_list) == list
+    assert len(failure_test_list) == 3
+    assert failure_test_list[0][1] == 404
+    assert failure_test_list[1][1] == 404
+    assert failure_test_list[2][1] == 404
+
+
+# Data structure tests
+def test_urls():
+    assert len(URLS) == 3
+    assert type(URLS) == list

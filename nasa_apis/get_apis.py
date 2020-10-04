@@ -5,6 +5,7 @@
 import os
 from typing import Tuple, List
 from collections import namedtuple
+import logging
 
 # requires install
 import requests
@@ -12,6 +13,8 @@ import requests
 # custom
 from nasa_apis.log_decorator import LogDecorator
 from nasa_apis.utils import build_data_frame, write_to_disk
+
+logger = logging.getLogger("NASA_Logs")
 
 # API key
 NASA_KEY = os.environ["NASA_KEY"]
@@ -48,7 +51,7 @@ def get_nasa_apis() -> List[Tuple]:
             else:
                 print(f"Error on call: {response.status_code}")
                 RESPONSES.append(Response(url, response.status_code, response.ok))
-        print(RESPONSES)
+        logger.debug(RESPONSES)
         return RESPONSES
     except Exception as e:
         return f"ERROR: { str(e) }"
