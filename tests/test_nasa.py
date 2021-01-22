@@ -166,18 +166,16 @@ def test_mock_success_api_call(mock_success_response_code):
     success_test_list = get_nasa_apis()
     assert type(success_test_list) == list
     assert len(success_test_list) == 3
-    assert success_test_list[0][1] == 200
-    assert success_test_list[1][1] == 200
-    assert success_test_list[2][1] == 200
+    for item in success_test_list:
+        assert 200 in item
 
 
 def test_mock_failure_api_call(mock_failure_response_code):
     failure_test_list = get_nasa_apis()
     assert type(failure_test_list) == list
     assert len(failure_test_list) == 3
-    assert failure_test_list[0][1] == 404
-    assert failure_test_list[1][1] == 404
-    assert failure_test_list[2][1] == 404
+    for item in failure_test_list:
+        assert 404 in item
 
 
 # Data structure tests

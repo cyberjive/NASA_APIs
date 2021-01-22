@@ -54,7 +54,7 @@ def get_nasa_apis() -> List[Tuple]:
         logger.debug(RESPONSES)
         return RESPONSES
     except Exception as e:
-        return f"ERROR: { str(e) }"
+        logger.error(str(e), RESPONSES)
 
 
 if __name__ == "__main__":
